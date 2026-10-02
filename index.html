@@ -1,0 +1,660 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#15111a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="format-detection" content="telephone=no" />
+  <title>Weekend Quest 💘</title>
+
+  <style>
+    :root {
+      --bg-1: #120f17;
+      --bg-2: #1d1321;
+      --card: rgba(255, 255, 255, 0.08);
+      --card-strong: rgba(255, 255, 255, 0.12);
+      --text: #fff9fc;
+      --muted: #cbbfca;
+      --accent: #ff7aae;
+      --accent-2: #ffb6d1;
+      --accent-dark: #45192c;
+      --good: #a8f0c6;
+      --shadow: 0 24px 60px rgba(0,0,0,.35);
+      --radius: 26px;
+    }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255,122,174,.16), transparent 32%),
+        radial-gradient(circle at 85% 30%, rgba(255,182,209,.10), transparent 28%),
+        linear-gradient(160deg, var(--bg-1), var(--bg-2));
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+        "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow-x: hidden;
+    }
+
+    button, input, textarea { font: inherit; }
+
+    .page {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: grid;
+      place-items: center;
+      padding:
+        max(18px, env(safe-area-inset-top))
+        16px
+        max(22px, env(safe-area-inset-bottom));
+    }
+
+    .shell {
+      width: min(100%, 440px);
+      position: relative;
+    }
+
+    .tiny-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 0 6px 10px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .progress {
+      height: 7px;
+      background: rgba(255,255,255,.08);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .progress > div {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width .35s ease;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      padding: 26px 20px 22px;
+      border: 1px solid rgba(255,255,255,.11);
+      border-radius: var(--radius);
+      background: linear-gradient(180deg, rgba(255,255,255,.105), rgba(255,255,255,.06));
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: auto -60px -90px auto;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: rgba(255,122,174,.09);
+      filter: blur(2px);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: var(--accent-2);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1, h2 {
+      margin: 0;
+      line-height: 1.05;
+      letter-spacing: -.035em;
+    }
+
+    h1 { font-size: clamp(34px, 9vw, 44px); }
+    h2 { font-size: clamp(28px, 7.5vw, 36px); }
+
+    .lead {
+      margin: 14px 0 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 16px;
+    }
+
+    .statline {
+      margin: 18px 0 6px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.08);
+      color: #f8eaf0;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .choice,
+    .primary,
+    .secondary,
+    .ghost {
+      min-height: 54px;
+      width: 100%;
+      border: 0;
+      border-radius: 17px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      transition: transform .12s ease, background .18s ease, border-color .18s ease;
+    }
+
+    .choice:active,
+    .primary:active,
+    .secondary:active,
+    .ghost:active {
+      transform: scale(.985);
+    }
+
+    .choice {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-align: left;
+      padding: 14px 15px;
+      color: var(--text);
+      background: rgba(255,255,255,.075);
+      border: 1px solid rgba(255,255,255,.095);
+    }
+
+    .choice:hover { background: rgba(255,255,255,.11); }
+
+    .choice .icon {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 12px;
+      background: rgba(255,122,174,.13);
+      font-size: 22px;
+    }
+
+    .choice strong {
+      display: block;
+      font-size: 16px;
+      margin-bottom: 2px;
+    }
+
+    .choice span:not(.icon) {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .primary {
+      padding: 14px 18px;
+      color: #2b1020;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--accent-2), var(--accent));
+      box-shadow: 0 10px 24px rgba(255,122,174,.22);
+    }
+
+    .secondary {
+      padding: 14px 18px;
+      color: var(--text);
+      font-weight: 800;
+      background: rgba(255,255,255,.09);
+      border: 1px solid rgba(255,255,255,.10);
+    }
+
+    .ghost {
+      min-height: 46px;
+      padding: 10px 14px;
+      color: var(--muted);
+      background: transparent;
+      border: 1px dashed rgba(255,255,255,.15);
+    }
+
+    .actions {
+      display: grid;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .summary {
+      display: grid;
+      gap: 9px;
+      margin-top: 18px;
+    }
+
+    .summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 13px;
+      border-radius: 15px;
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.07);
+    }
+
+    .summary-row span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .summary-row strong {
+      text-align: right;
+      font-size: 14px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 14px;
+      padding: 8px 11px;
+      border-radius: 999px;
+      color: #dff8ea;
+      background: rgba(93,207,145,.12);
+      border: 1px solid rgba(168,240,198,.2);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .footer-note {
+      margin: 14px 6px 0;
+      text-align: center;
+      color: rgba(255,255,255,.45);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .fade-in { animation: fadeIn .28s ease both; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(7px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .heart {
+      position: fixed;
+      z-index: 20;
+      pointer-events: none;
+      user-select: none;
+      font-size: 20px;
+      animation: floatUp 1.8s ease-out forwards;
+    }
+
+    @keyframes floatUp {
+      0% { opacity: 0; transform: translateY(0) scale(.7) rotate(0deg); }
+      15% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-42vh) scale(1.35) rotate(22deg); }
+    }
+
+    .hidden { display: none !important; }
+
+    @media (min-width: 700px) {
+      .card { padding: 31px 28px 26px; }
+      .choice { padding: 15px 17px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="shell" aria-live="polite">
+      <div class="tiny-top">
+        <span>Weekend Quest</span>
+        <span id="stepLabel">Quest Start</span>
+      </div>
+
+      <div class="progress" aria-hidden="true">
+        <div id="progressBar"></div>
+      </div>
+
+      <div id="card" class="card"></div>
+
+      <p class="footer-note">
+        A completely serious scheduling platform with absolutely no hidden agenda.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    const state = {
+      vibe: null,
+      food: null,
+      activity: null,
+      day: null
+    };
+
+    const card = document.getElementById("card");
+    const progressBar = document.getElementById("progressBar");
+    const stepLabel = document.getElementById("stepLabel");
+
+    const totalSteps = 6;
+
+    function setProgress(step, label) {
+      const pct = Math.max(0, Math.min(100, ((step - 1) / (totalSteps - 1)) * 100));
+      progressBar.style.width = pct + "%";
+      stepLabel.textContent = label;
+    }
+
+    function render(html) {
+      card.classList.remove("fade-in");
+      void card.offsetWidth;
+      card.innerHTML = html;
+      card.classList.add("fade-in");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function option(icon, title, subtitle, value, handlerName) {
+      return `
+        <button class="choice" type="button" onclick="${handlerName}('${escapeAttr(value)}')">
+          <span class="icon">${icon}</span>
+          <span>
+            <strong>${title}</strong>
+            <span>${subtitle}</span>
+          </span>
+        </button>
+      `;
+    }
+
+    function escapeAttr(str) {
+      return String(str).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
+    }
+
+    function startScreen() {
+      setProgress(1, "Quest Start");
+      render(`
+        <p class="eyebrow">⚔️ New side quest detected</p>
+        <h1>A wild Jonathan has appeared.</h1>
+        <p class="lead">
+          He appears to be requesting your presence for a highly classified weekend adventure.
+        </p>
+
+        <div class="statline">
+          <strong>Quest:</strong> Weekend Shenanigans<br>
+          <strong>Reward:</strong> Food, affection, questionable jokes and +250 Relationship XP
+        </div>
+
+        <div class="actions">
+          <button class="primary" type="button" onclick="vibeScreen()">Accept quest 💖</button>
+          <button class="ghost" type="button" onclick="declineScreen()">Maybe another weekend 🫡</button>
+        </div>
+      `);
+    }
+
+    function declineScreen() {
+      setProgress(1, "Quest Postponed");
+      render(`
+        <p class="eyebrow">🫡 Quest postponed</p>
+        <h2>Understandable. Jonathan will survive.</h2>
+        <p class="lead">
+          Probably. The quest has been returned to the notice board for a future weekend.
+        </p>
+        <div class="actions">
+          <button class="secondary" type="button" onclick="startScreen()">Actually... show me the quest 👀</button>
+        </div>
+      `);
+    }
+
+    function vibeScreen() {
+      setProgress(2, "Choose Vibe");
+      render(`
+        <p class="eyebrow">Step 1 of 4</p>
+        <h2>Choose your adventure style.</h2>
+        <p class="lead">What kind of weekend energy are we working with?</p>
+
+        <div class="options">
+          ${option("🛋️", "Goblin Mode", "Comfy, low effort, excellent snacks.", "Goblin Mode", "chooseVibe")}
+          ${option("🍷", "Proper Date", "We put on real clothes and everything.", "Proper Date", "chooseVibe")}
+          ${option("🎲", "Chaos Mode", "Minimal planning. Maximum potential.", "Chaos Mode", "chooseVibe")}
+        </div>
+      `);
+    }
+
+    function chooseVibe(value) {
+      state.vibe = value;
+      foodScreen();
+    }
+
+    function foodScreen() {
+      setProgress(3, "Acquire Food");
+      render(`
+        <p class="eyebrow">Step 2 of 4</p>
+        <h2>Critical mission parameter: food.</h2>
+        <p class="lead">A successful quest requires supplies.</p>
+
+        <div class="options">
+          ${option("🍜", "Dinner Somewhere", "We leave the house and obtain proper food.", "Dinner Somewhere", "chooseFood")}
+          ${option("🍕", "Takeaway Mission", "Acquire food. Return to safety.", "Takeaway Mission", "chooseFood")}
+          ${option("🍰", "Dessert First", "Civilisation has rules. We reject them.", "Dessert First", "chooseFood")}
+          ${option("🎁", "Surprise Me", "Jonathan receives dangerous levels of authority.", "Surprise Me", "chooseFood")}
+        </div>
+      `);
+    }
+
+    function chooseFood(value) {
+      state.food = value;
+      activityScreen();
+    }
+
+    function activityScreen() {
+      setProgress(4, "Pick Activity");
+      render(`
+        <p class="eyebrow">Step 3 of 4</p>
+        <h2>What happens after food?</h2>
+        <p class="lead">Choose wisely. This choice may affect the entire timeline.</p>
+
+        <div class="options">
+          ${option("🎬", "Movie / Show", "Elite sitting-down technology.", "Movie / Show", "chooseActivity")}
+          ${option("🎳", "Go Do Something", "Bowling, arcade, mini golf or similar nonsense.", "Go Do Something", "chooseActivity")}
+          ${option("🌙", "Walk + Talk", "Wander somewhere nice and talk rubbish.", "Walk + Talk", "chooseActivity")}
+          ${option("❓", "Mystery Activity", "Hand the controller to Jonathan.", "Mystery Activity", "chooseActivity")}
+        </div>
+      `);
+    }
+
+    function chooseActivity(value) {
+      state.activity = value;
+      dayScreen();
+    }
+
+    function dayScreen() {
+      setProgress(5, "Choose Day");
+      render(`
+        <p class="eyebrow">Step 4 of 4</p>
+        <h2>Final boss: scheduling.</h2>
+        <p class="lead">When shall this extremely official operation occur?</p>
+
+        <div class="options">
+          ${option("☀️", "Saturday", "Classic weekend territory.", "Saturday", "chooseDay")}
+          ${option("🌤️", "Sunday", "Sunday adventure unlocked.", "Sunday", "chooseDay")}
+          ${option("🗓️", "We'll Figure It Out", "Commitment to the quest, not the calendar.", "We'll Figure It Out", "chooseDay")}
+        </div>
+      `);
+    }
+
+    function chooseDay(value) {
+      state.day = value;
+      summaryScreen();
+    }
+
+    function summaryScreen() {
+      setProgress(6, "Final Review");
+      render(`
+        <p class="eyebrow">📜 Quest configuration complete</p>
+        <h2>Your adventure has been assembled.</h2>
+        <p class="lead">
+          Please review this extremely binding and definitely legally enforceable itinerary.
+        </p>
+
+        <div class="summary">
+          <div class="summary-row"><span>Vibe</span><strong>${state.vibe}</strong></div>
+          <div class="summary-row"><span>Food</span><strong>${state.food}</strong></div>
+          <div class="summary-row"><span>Activity</span><strong>${state.activity}</strong></div>
+          <div class="summary-row"><span>Day</span><strong>${state.day}</strong></div>
+        </div>
+
+        <div class="badge">✅ Boyfriend availability: suspiciously convenient</div>
+
+        <div class="actions">
+          <button class="primary" type="button" onclick="confirmScreen()">Lock it in 💘</button>
+          <button class="secondary" type="button" onclick="vibeScreen()">Restart the build 🔄</button>
+        </div>
+      `);
+    }
+
+    function confirmScreen() {
+      setProgress(6, "Quest Accepted");
+      spawnHearts();
+
+      render(`
+        <p class="eyebrow">🏆 Quest accepted</p>
+        <h1>Booking confirmed.</h1>
+        <p class="lead">
+          Congratulations. You have successfully scheduled one (1) boyfriend adventure.
+        </p>
+
+        <div class="summary">
+          <div class="summary-row"><span>When</span><strong>${state.day}</strong></div>
+          <div class="summary-row"><span>Mission</span><strong>${state.food} + ${state.activity}</strong></div>
+          <div class="summary-row"><span>Difficulty</span><strong>Hopefully very easy</strong></div>
+          <div class="summary-row"><span>Reward</span><strong>+250 Relationship XP 💖</strong></div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" type="button" onclick="shareQuest()">Send results to Jonathan 📤</button>
+          <button class="secondary" type="button" onclick="copyQuest()">Copy booking message 📋</button>
+          <button class="ghost" type="button" onclick="startScreen()">Play again</button>
+        </div>
+      `);
+    }
+
+    function bookingText() {
+      return `I have officially accepted the Weekend Quest 💘
+
+Day: ${state.day}
+Vibe: ${state.vibe}
+Food: ${state.food}
+Activity: ${state.activity}
+
++250 Relationship XP has been awarded.`;
+    }
+
+    async function shareQuest() {
+      const text = bookingText();
+
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: "Weekend Quest 💘",
+            text
+          });
+          return;
+        } catch (err) {
+          if (err && err.name === "AbortError") return;
+        }
+      }
+
+      await copyQuest();
+    }
+
+    async function copyQuest() {
+      const text = bookingText();
+
+      try {
+        await navigator.clipboard.writeText(text);
+        toast("Copied. Send it to Jonathan 😌");
+      } catch (e) {
+        const area = document.createElement("textarea");
+        area.value = text;
+        area.setAttribute("readonly", "");
+        area.style.position = "fixed";
+        area.style.opacity = "0";
+        document.body.appendChild(area);
+        area.select();
+        document.execCommand("copy");
+        document.body.removeChild(area);
+        toast("Copied. Send it to Jonathan 😌");
+      }
+    }
+
+    function toast(message) {
+      const existing = document.getElementById("toast");
+      if (existing) existing.remove();
+
+      const el = document.createElement("div");
+      el.id = "toast";
+      el.textContent = message;
+      el.style.position = "fixed";
+      el.style.left = "50%";
+      el.style.bottom = "max(24px, env(safe-area-inset-bottom))";
+      el.style.transform = "translateX(-50%)";
+      el.style.zIndex = "99";
+      el.style.maxWidth = "calc(100vw - 32px)";
+      el.style.padding = "11px 14px";
+      el.style.borderRadius = "999px";
+      el.style.background = "rgba(20,15,24,.94)";
+      el.style.color = "white";
+      el.style.border = "1px solid rgba(255,255,255,.15)";
+      el.style.boxShadow = "0 12px 30px rgba(0,0,0,.3)";
+      el.style.fontSize = "13px";
+      el.style.fontWeight = "800";
+      document.body.appendChild(el);
+
+      setTimeout(() => el.remove(), 2200);
+    }
+
+    function spawnHearts() {
+      const symbols = ["💖", "💕", "💘", "✨", "❤️"];
+      const count = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 5 : 18;
+
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          const h = document.createElement("div");
+          h.className = "heart";
+          h.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+          h.style.left = (6 + Math.random() * 88) + "vw";
+          h.style.bottom = (-10 + Math.random() * 18) + "px";
+          h.style.fontSize = (16 + Math.random() * 16) + "px";
+          document.body.appendChild(h);
+          setTimeout(() => h.remove(), 1900);
+        }, i * 55);
+      }
+    }
+
+    startScreen();
+  </script>
+</body>
+</html>
